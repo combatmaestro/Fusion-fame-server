@@ -10,6 +10,5 @@ const router = express.Router();
 
 router.post('/addBooking', addBooking);
 router.get('/getAllBookings', getAllBookings);
-router.get('/getAllBookings', sendReminders);
-
+router.get('/sendReminders', sendReminders);
 export default router;

@@ -1,11 +1,10 @@
-const express = require('express');
+// adminUserRoutes.js
+import express from 'express';
+import { loginAdmin, registerAdmin } from '../controllers/adminUserController.js';
+
 const router = express.Router();
-const { loginAdmin, registerAdmin } = require('../controllers/adminUserController');
 
-// POST /api/admin/login
 router.post('/login', loginAdmin);
-
-// (Optional) Register admin – remove in production or protect it
 router.post('/register', registerAdmin);
 
-module.exports = router;
+export default router; // ✅ ESM compatible
