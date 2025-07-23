@@ -9,7 +9,7 @@ dayjs.extend(timezone);
 import twilio from 'twilio';
 import dbConnect  from "../lib/dbConnect.js";
 const TWILIO_ACCOUNT_SID =  'ACc21171bb38a7949c943a466dd385442a';
-const TWILIO_AUTH_TOKEN =  '9dd4dc77df2b7e07da426fd4d26564cb';
+const TWILIO_AUTH_TOKEN =  '4813f15866cea931c7cb2cca223cac56';
 const TWILIO_FROM =  '+19063598066'; // fallback
 
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
