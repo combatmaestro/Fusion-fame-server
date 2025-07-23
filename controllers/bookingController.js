@@ -24,7 +24,13 @@ export const addBooking = async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields.' });
     }
 
-    const [startHour] = slot.split('-').map(Number);
+    const [startStr] = slot.split('-');
+let startHour = Number(startStr);
+
+// Convert to 24-hour format assuming all slots are in PM (1–12 PM)
+if (startHour >= 1 && startHour <= 7) {
+  startHour += 12; // e.g., 1 becomes 13, 2 becomes 14 (i.e., 1 PM, 2 PM, etc.)
+}
 
     // ✅ Convert IST to UTC before saving
     const todayIST = dayjs().tz('Asia/Kolkata').hour(startHour).minute(0).second(0).millisecond(0);
