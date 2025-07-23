@@ -76,12 +76,13 @@ export const getAllBookings = async (req, res) => {
 export const sendReminders = async (req, res) => {
   try {
     const now = dayjs();
-    const end = now.add(60, 'minute').toDate(); // appointments in the next 60 mins
+const start = now.toDate();
+const end = now.add(60, 'minute').toDate();
 
-    const bookings = await Booking.find({
-      smsReminderSent: false,
-      appointmentTime: { $lte: end }, // upcoming within 60 mins
-    });
+const bookings = await Booking.find({
+  smsReminderSent: false,
+  appointmentTime: { $gte: start, $lte: end },
+});
 
     console.log(`[DEBUG] Found ${bookings.length} upcoming bookings for reminder`);
 
