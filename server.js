@@ -27,7 +27,7 @@ app.use(express.json());
 app.use('/api/enquiries', enquiryRoutes);
 app.use('/api/admin', adminUserRoutes);
 app.use('/api/bookings', bookingRoutes);
-
+router.get('/api/sendReminders', sendReminders); // 🆕 for cron
 // MongoDB connection (cached for Vercel)
 let cachedDb = null;
 async function connectDB() {

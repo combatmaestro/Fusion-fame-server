@@ -1,10 +1,22 @@
+// models/Booking.js
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
   clientName: String,
-  clientPhone: String,
+  clientPhone: {
+    type: String,
+    required: true,
+  },
   service: String,
   slot: String,
+  appointmentTime: {
+    type: Date,
+    required: true,
+  },
+  smsReminderSent: {
+    type: Boolean,
+    default: false,
+  },
   status: {
     type: String,
     enum: ['Pending', 'Confirmed'],
@@ -16,4 +28,4 @@ const bookingSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Booking', bookingSchema);
+module.exports = mongoose.models.Booking || mongoose.model('Booking', bookingSchema);
