@@ -3,7 +3,7 @@
 import Booking from '../models/Bookings.js';
 import dayjs from 'dayjs';
 import twilio from 'twilio';
-
+import dbConnect  from "../lib/dbConnect.js";
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_SID || 'ACc21171bb38a7949c943a466dd385442a';
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_TOKEN || '9dd4dc77df2b7e07da426fd4d26564cb';
 const TWILIO_FROM = process.env.TWILIO_FROM || '+19063598066'; // fallback
@@ -74,6 +74,7 @@ export const getAllBookings = async (req, res) => {
 // @desc    Send reminders for upcoming bookings
 // @route   GET /api/bookings/sendReminders
 export const sendReminders = async (req, res) => {
+  await dbConnect(); // Ensure DB connection
   try {
     const now = dayjs();
 const start = now.toDate();
