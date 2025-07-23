@@ -1,11 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const {
+// routes/bookingRoutes.js
+import express from 'express';
+import {
   addBooking,
-  getAllBookings
-} = require('../controllers/bookingController');
+  getAllBookings,
+  sendReminders
+} from '../controllers/bookingController.js';
+
+const router = express.Router();
 
 router.post('/addBooking', addBooking);
 router.get('/getAllBookings', getAllBookings);
+router.get('/getAllBookings', sendReminders);
 
-module.exports = router;
+export default router;
