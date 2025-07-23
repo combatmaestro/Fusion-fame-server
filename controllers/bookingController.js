@@ -24,12 +24,11 @@ export const addBooking = async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields.' });
     }
 
-    // Extract start hour from "11-12"
     const [startHour] = slot.split('-').map(Number);
 
-    // Use today's date with that hour as appointmentTime
-    const today = dayjs().hour(startHour).minute(0).second(0).millisecond(0);
-    const appointmentTime = today.toDate();
+    // ✅ Convert IST to UTC before saving
+    const todayIST = dayjs().tz('Asia/Kolkata').hour(startHour).minute(0).second(0).millisecond(0);
+    const appointmentTime = todayIST.utc().toDate(); // save as UTC
 
     const booking = new Booking({
       clientName,
@@ -41,15 +40,14 @@ export const addBooking = async (req, res) => {
 
     await booking.save();
 
-    // Send SMS if appointment is within 60 minutes
-    const now = dayjs();
-    const diffMinutes = dayjs(appointmentTime).diff(now, 'minute');
+    const now = dayjs().tz('Asia/Kolkata');
+    const diffMinutes = todayIST.diff(now, 'minute'); // use IST diff
 
     if (diffMinutes < 60) {
       await client.messages.create({
-        body: `Hello ${clientName}, this is a reminder for your appointment at ${today.format('hh:mm A')}.`,
+        body: `Hello ${clientName}, this is a reminder for your appointment at ${todayIST.format('hh:mm A')}.`,
         from: TWILIO_FROM,
-        to: clientPhone,
+        to: clientPhone.startsWith('+') ? clientPhone : '+91' + clientPhone,
       });
 
       booking.smsReminderSent = true;
@@ -62,6 +60,7 @@ export const addBooking = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
 
 
 // @desc    Get all bookings
