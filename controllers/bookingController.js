@@ -2,6 +2,10 @@
 
 import Booking from '../models/Bookings.js';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 import twilio from 'twilio';
 import dbConnect  from "../lib/dbConnect.js";
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_SID || 'ACc21171bb38a7949c943a466dd385442a';
@@ -76,23 +80,31 @@ export const getAllBookings = async (req, res) => {
 export const sendReminders = async (req, res) => {
   await dbConnect(); // Ensure DB connection
   try {
-    const now = dayjs();
-const start = now.toDate();
-const end = now.add(60, 'minute').toDate();
+    const nowIST = dayjs().tz('Asia/Kolkata'); // Local time in IST
+    const start = nowIST.toDate(); // current IST time
+    const end = nowIST.add(60, 'minute').toDate(); // next 60 mins
 
-const bookings = await Booking.find({
-  smsReminderSent: false,
-  appointmentTime: { $gte: start, $lte: end },
-});
+    // Booking.appointmentTime is stored in UTC
+    // So compare against UTC equivalents of the IST range
+    const startUTC = dayjs(start).utc().toDate();
+    const endUTC = dayjs(end).utc().toDate();
 
+    const bookings = await Booking.find({
+      smsReminderSent: false,
+      appointmentTime: { $gte: startUTC, $lte: endUTC },
+    });
+
+    console.log(`[DEBUG] Time now IST: ${nowIST.format()}`);
     console.log(`[DEBUG] Found ${bookings.length} upcoming bookings for reminder`);
 
     const results = [];
 
     for (const booking of bookings) {
       try {
+        const appointmentTimeIST = dayjs(booking.appointmentTime).tz('Asia/Kolkata').format('hh:mm A');
+
         const message = await client.messages.create({
-          body: `Hello ${booking.clientName}, this is a reminder for your appointment at ${dayjs(booking.appointmentTime).format('hh:mm A')}.`,
+          body: `Hello ${booking.clientName}, this is a reminder for your appointment at ${appointmentTimeIST}.`,
           from: TWILIO_FROM,
           to: booking.clientPhone.startsWith('+') ? booking.clientPhone : '+91' + booking.clientPhone,
         });
