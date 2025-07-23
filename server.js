@@ -34,7 +34,7 @@ async function connectDB() {
   if (cachedDb) return cachedDb;
 
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+    const conn = await mongoose.connect('mongodb+srv://theadarshsahu:UC8kISxJHngcB5a9@cluster0.ksus6tq.mongodb.net/', {
       serverSelectionTimeoutMS: 10000,
       bufferCommands: false,
     });
