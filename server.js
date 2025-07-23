@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 
 import enquiryRoutes from './routes/enquiryRoutes.js';
 import adminUserRoutes from './routes/adminUserRoutes.js';
+
 import bookingRoutes from './routes/bookingRoutes.js';
 
 // Load environment variables

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const enquirySchema = new mongoose.Schema({
   userName: { type: String, required: true },
@@ -8,4 +8,7 @@ const enquirySchema = new mongoose.Schema({
   submittedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Enquiry", enquirySchema);
+// Prevent model overwrite issue in development
+const Enquiry = mongoose.models.Enquiry || mongoose.model('Enquiry', enquirySchema);
+
+export default Enquiry;

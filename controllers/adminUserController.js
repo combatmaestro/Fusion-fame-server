@@ -1,10 +1,10 @@
-const AdminUser = require('../models/adminUser');
-const jwt = require('jsonwebtoken');
+// adminUserController.js
+import AdminUser from '../models/adminUser.js';
+import jwt from 'jsonwebtoken';
 
-// You can replace this with your own secret
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
-exports.loginAdmin = async (req, res) => {
+export const loginAdmin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -23,7 +23,7 @@ exports.loginAdmin = async (req, res) => {
   }
 };
 
-exports.registerAdmin = async (req, res) => {
+export const registerAdmin = async (req, res) => {
   const { email, password } = req.body;
 
   try {

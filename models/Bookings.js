@@ -1,5 +1,5 @@
 // models/Booking.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const bookingSchema = new mongoose.Schema({
   clientName: String,
@@ -28,4 +28,5 @@ const bookingSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.models.Booking || mongoose.model('Booking', bookingSchema);
+const Booking = mongoose.models.Booking || mongoose.model('Booking', bookingSchema);
+export default Booking;
