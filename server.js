@@ -1,19 +1,60 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const connectDB = require("./config/db");
-const enquiryRoutes = require("./routes/enquiryRoutes");
-const adminUserRoutes = require('./routes/adminUserRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
+// server.js or app.js
+
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import mongoose from 'mongoose';
+
+import enquiryRoutes from './routes/enquiryRoutes.js';
+import adminUserRoutes from './routes/adminUserRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
+
+// Load environment variables
 dotenv.config();
-connectDB();
 
 const app = express();
-app.use(cors());
+
+// Middleware
+// app.use(cors());
+app.use(cors({
+  origin: ["https://fusion-frontend-pink.vercel.app", "https://fusion-fame-admin.vercel.app"],
+  credentials: true,
+}));
+
 app.use(express.json());
 
-app.use("/api/enquiries", enquiryRoutes);
+// Routes
+app.use('/api/enquiries', enquiryRoutes);
 app.use('/api/admin', adminUserRoutes);
 app.use('/api/bookings', bookingRoutes);
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// MongoDB connection (cached for Vercel)
+let cachedDb = null;
+async function connectDB() {
+  if (cachedDb) return cachedDb;
+
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      bufferCommands: false,
+    });
+    cachedDb = conn;
+    console.log('✅ MongoDB connected');
+    return conn;
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error.message);
+    throw error;
+  }
+}
+
+// Ensure DB connection before handling any request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Database connection failed' });
+  }
+});
+
+export default app;
