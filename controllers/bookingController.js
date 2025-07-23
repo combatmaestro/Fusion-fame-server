@@ -76,13 +76,14 @@ export const getAllBookings = async (req, res) => {
 export const sendReminders = async (req, res) => {
   try {
     const now = dayjs();
-    const start = now.add(55, 'minute').toDate(); // 55 mins from now
-    const end = now.add(65, 'minute').toDate();   // 65 mins from now
+    const end = now.add(60, 'minute').toDate(); // appointments in the next 60 mins
 
     const bookings = await Booking.find({
       smsReminderSent: false,
-      appointmentTime: { $gte: start, $lte: end },
+      appointmentTime: { $lte: end }, // upcoming within 60 mins
     });
+
+    console.log(`[DEBUG] Found ${bookings.length} upcoming bookings for reminder`);
 
     const results = [];
 
@@ -91,7 +92,7 @@ export const sendReminders = async (req, res) => {
         const message = await client.messages.create({
           body: `Hello ${booking.clientName}, this is a reminder for your appointment at ${dayjs(booking.appointmentTime).format('hh:mm A')}.`,
           from: TWILIO_FROM,
-          to: booking.clientPhone,
+          to: booking.clientPhone.startsWith('+') ? booking.clientPhone : '+91' + booking.clientPhone,
         });
 
         booking.smsReminderSent = true;
@@ -99,14 +100,15 @@ export const sendReminders = async (req, res) => {
 
         results.push({ to: booking.clientPhone, status: 'sent', sid: message.sid });
       } catch (smsErr) {
-        console.error(`SMS failed for ${booking.clientPhone}:`, smsErr.message);
+        console.error(`[ERROR] Failed to send SMS to ${booking.clientPhone}:`, smsErr.message);
         results.push({ to: booking.clientPhone, status: 'failed', error: smsErr.message });
       }
     }
 
-    res.status(200).json({ message: `✅ Processed ${results.length} reminders`, results });
+    res.status(200).json({ message: `✅ Sent ${results.length} reminders`, results });
   } catch (err) {
     console.error('Reminder error:', err.message);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
