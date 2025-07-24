@@ -61,7 +61,7 @@ if (startHour >= 1 && startHour <= 7) {
 
     if (diffMinutes < 60) {
       await client.messages.create({
-        body: `Hello ${clientName}, this is a reminder for your appointment at ${todayIST.format('hh:mm A')}.`,
+        body: `Hello Mr./Mrs ${clientName}, this is a reminder for your appointment at Fusion Fame Hair Studio , at the given time : ${todayIST.format('hh:mm A')}.`,
         from: TWILIO_FROM,
         to: clientPhone.startsWith('+') ? clientPhone : '+91' + clientPhone,
       });
