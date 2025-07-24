@@ -8,9 +8,19 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 import twilio from 'twilio';
 import dbConnect  from "../lib/dbConnect.js";
-const TWILIO_ACCOUNT_SID =  'ACc21171bb38a7949c943a466dd385442a';
-const TWILIO_AUTH_TOKEN =  '4813f15866cea931c7cb2cca223cac56';
-const TWILIO_FROM =  '+19063598066'; // fallback
+// adarsh credentials trial
+// const TWILIO_ACCOUNT_SID =  'ACc21171bb38a7949c943a466dd385442a';
+// const TWILIO_AUTH_TOKEN =  '4813f15866cea931c7cb2cca223cac56';
+// const TWILIO_FROM =  '+19063598066'; // fallback
+
+const TWILIO_ACCOUNT_SID =  'AC2cd232542f0776d63a5f3df29bdc088b';
+const TWILIO_AUTH_TOKEN =  '07f2a997af5ed5c2472c0b8a88d34ab0';
+const TWILIO_FROM =  '+13204312035'; // fallback
+
+
+// #FUSION FAME BUSINESS AUTH TOKEN : 07f2a997af5ed5c2472c0b8a88d34ab0
+// #FUSION FAME BUSINESS ACCOUNT SID : AC2cd232542f0776d63a5f3df29bdc088b
+// #FUSION FAME BUSINESS FROM NUMBER : +13204312035
 
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
