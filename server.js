@@ -18,7 +18,7 @@ const app = express();
 // Middleware
 // app.use(cors());
 app.use(cors({
-  origin: ["https://fusion-frontend-pink.vercel.app", "https://fusion-fame-admin.vercel.app"],
+  origin: ["https://www.ffhairstudio.com/"],
   credentials: true,
 }));
 
